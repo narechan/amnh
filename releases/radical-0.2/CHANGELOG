@@ -1,0 +1,45 @@
+1. Changed the overall architecture to include radical_check.pl which checks if the 
+the total fraction of trees has achieved the input topology over a number of 
+concatenation intervals given a user specified threshold and consecutive interval 
+requirement.
+
+Note that in order to execute checking, a reference total evidence topology must be input.
+Radical can still be run without inputing a topology in which case all unique topologies 
+will be calculated for radical stats, but in the scenario, the auot-abort procedure via 
+checking is not possible.
+
+2. The overall workflow now looks like this:
+
+	radical_setup.pl --> radical_run.pl --> radical_check.pl --> 
+	radical_topos.pl --> radical_pp.pl
+	
+radical_check.pl feeds back to radical_run.pl if the statistical criterion is not
+satisfied.  Parallelizable elements include radical_run.pl, radical_topos.pl, and 
+radical_pp.pl. Of these, parallel methods for radical_run.pl and radical_pp.pl have 
+been implemented.
+
+3. Now using Bio::Phylo to create the topology.distribution file as a frequency 
+table of newick strings, and to created the annotated.tre file in radical_pp.pl.
+Also have an alternative tree parser called parse_tree_bio_phylo in Radical.pm to 
+enable tree parsing using Bio::Phylo. However, Bio::TreeIO is still used for 
+tree parsing in the RADICAL workflow.
+
+4. Fixed a bug in compare_all_nodes that was mis-calling some trees with polytomies as 
+congruent with comparable trees containing all bifurcating nodes. 
+
+5. Improved the perfomance of radical_topos.pl by calling the script for every 
+topology generated. This has the added benefit of putting in place a mechanism 
+for parallelizing this portion of the workflow if required in the future.
+
+6. Changed radical_parse.pl to radical_pp.pl (post-process), a script which now 
+handles consensus tree building, node analysis, and the compliation of 
+RADICAL stats. radical_pp.pl is now sensitive to the number of concatenation steps 
+performed in an abbreviated RADICAL run. Stats will be with respect to 
+the maximum concatenation point rendered.
+
+7. Removed option to generate matrices in radical_setup.pl post-hoc.
+
+8. Created a annotated.tre file that contains a newick tree of the input topology 
+annotated with the fixation point and AUC for each node. Note that the tree is 
+annotated only when an input tree is given. In tree agnostic mode, radical will not label 
+all the unique trees analyzed.

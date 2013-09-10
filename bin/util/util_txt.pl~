@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+
+use Getopt::Std;
+
+my %opts = ();
+getopts ('a:b:', \%opts);
+my $afile  = $opts{'a'};
+my $bfile  = $opts{'b'};
+
+my $a = {};
+open (A, "$afile");
+while (my $line = <A>){
+    chomp $line;
+    my @a = split (/\t/, $line);
+    $a->{$a[2]} = $a[5];
+}
+close (A);
+
+my $b = {};
+open (B, "$bfile");
+while (my $line = <B>){
+    chomp $line;
+    my @b = split (/\t/, $line);
+    $b->{$b[2]} = $b[5];
+}
+close (B);
+
+foreach my $pos (keys %$a){
+    if (exists ($b->{$pos})){
+#	print "$pos\t$a->{$pos}\t$b->{$pos}\tmatch\n";
+    }
+    else {
+	print "$pos\t$a->{$pos}\t$none\tmismatch\n";
+    }
+}

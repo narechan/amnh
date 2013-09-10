@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+
+use Getopt::Std;
+
+my %opts = ();
+getopts ('d:', \%opts);
+my $dir  = $opts{'d'};
+
+opendir (D, "$dir");
+my @files = sort (readdir(D));
+shift @files;
+shift @files;
+closedir (D);
+
+my $data = {};
+foreach my $file (sort @files){
+    open (F, "$dir/$file");
+    while (my $line = <F>){
+	chomp $line;
+	my @line = split (/\t/, $line);
+	$data->{$line[1]}->{$file} = $line[7];
+    }
+    close (F);
+}
+
+my $files = join "\t", @files;
+print "\t$files\n";
+
+foreach my $seqcov (sort {$a <=> $b} keys %$data){
+    print "$seqcov\t";
+
+    foreach my $file (sort keys %{$data->{$seqcov}}){
+	print "$data->{$seqcov}->{$file}\t";
+    }
+    print "\n";
+}
+    
+
+
+=head
+my $data = {};
+open (F, "$file");
+while (my $line = <F>){
+    chomp $line;
+    
+    my ($node, $nodestring, $boot) = split (/\s/, $line);
+    (push @{$data->{$nodestring}}, $boot) if ($boot);
+    
+}
+close (F);
+
+foreach my $nodestring (sort keys %$data){
+    my @boots = @{$data->{$nodestring}};
+    my $boots = @boots;
+    
+    my $bootstring = join ("\t", @boots);
+    
+    print "$nodestring\t$boots\t$bootstring\n";
+}
+=cut

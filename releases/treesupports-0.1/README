@@ -1,0 +1,78 @@
+SUMMARY:
+
+TreeSupports uses PAUP to calculate BS and PBS values for a given
+matrix and tree. It can also optionally calculate NDIs when used in 
+forked mode (NDI's unavailble to parallel mode for now).
+
+SCRIPTS and MODULES:
+TreeSupports is written in PERL.
+
+run_treesupports_forked.pl and run_treesuports_parallel.pl are runner
+scripts that execute the TreeSupports process on a multicore machine 
+or SGE cluster, respectively.
+
+treesupports_setup.pl, treesupports_run.pl, and treesupports_parse.pl
+are scripts that setup, run, and parse TreeSupports results to create 
+the TreeSupports summary file, respectively.
+
+TreeSupports.pm contains methods that run various TreeSupports functions.
+
+INSTALLATION:
+To install TreeSupports, copy the scipts in bin/ to your $PATH, and 
+the modules in lib/ to your $PERL5LIB.
+
+DEPENDENCIES:
+TreeSupports requires PAUP for tree reconstruction. Other tree building 
+programs can be used if additional runners and parsers are added to 
+the TreeSupports.pm library.
+
+TreeSupports requrires bioperl.
+
+CONFIGURATION:
+An example configuration file can be found in the distribution directory.
+	TREECOMMAND is a string of parameters input to paup	
+	TESTS is a space delimited list of tests you want to perform.
+	      TESTS should minimally include pbs and bs but can also
+	      include ndi.
+
+RUNNING:
+See usage instructions accompanying each script. A successful run will require
+the launch of either run_treesupports_forked.pl or run_treesupports_parallel.pl 
+only, as long as all the other components are correctly installed.
+
+OUTPUT:
+The main output is the summary file. It's columns are as follows:
+	Part: the partition tested.
+	Coords: the coordinates of this partition in the matrix.
+	Node: the node tested.
+	Topo: the result of the BS topology test
+	BSwL: The length of the BS tree with the node constrained to exist
+	BSwoL: The length of the BS tree with the node constrained not to exist 
+	BS: The bremer support (BSwoL - BSwL)
+	PBSunL: Length of the unconstrained PBS tree
+	PBSwL: Length of the PBS tree with the node constrained to exist
+	PBSwoL: Length of the PBS tree with the node constrained to not exist
+	PBS: The partition bremer support (PBSwoL - PBSunL)
+	PBSL: The local partition bremer suppor (PBSwoL - PBSwL)
+	PHBS : The partition hidden bremer support (PBS - BS)
+	PHBSL: The local partition hidden bremer support (PBSL - BS)
+	*NDIwLall: The NDI length of all partitions with the node
+	           constrained to exist
+	*NDIwoLall: The NDI length of all partitions with the node 
+	            constrained not to exist
+	*NDIwLrm: The NDI length of all partitions minus Part with the node 
+                   constrained to exist
+        *NDIwoLrm: The NDI length of all partitions minus Part with the node 
+                    constrained not to exist
+	*NDI: The NDI ( (NDIwoLall - NDIwLall) - (NDIwoLrm - NDIwLrm) )
+
+*optional: exist only if NDI calcs are requested (they can take a long
+time to compute).
+	
+The ouput directory also contains to files that describe the total 
+evidence tree: nodes, which indexes all nodes found in the tree; and 
+lineages, which indexes all lineages
+
+Runtime logs, cmds, expts and trees for bs, pbs and ndi calculations 
+can be found in the subdirectories for each test.
+		

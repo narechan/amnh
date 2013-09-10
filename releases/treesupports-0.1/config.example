@@ -1,0 +1,2 @@
+TREECOMMAND=hsearch nreps=100 swap=tbr addseq=random multrees=no
+TESTS=pbs bs ndi

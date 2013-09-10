@@ -1,0 +1,121 @@
+OrthologID automates gene orthology determination within a
+character-based phylogenetic framework.  Using external tools,
+OrthologID clusters genes into families, creates gene trees,
+identifies orthologs, and generates a simultaneous analysis matrix.
+
+OrthologID is a collaborative effort between the American Museum
+of Natural History and New York Universtiy.  This software is
+made available under the GNU General Public License v3.0.
+
+Please cite:
+Joanna C. Chiu, Ernest K. Lee, Mary G. Egan, Indra Neil Sarkar,
+Gloria M. Coruzzi, and Rob DeSalle. OrthologID: automation of
+genome-scale ortholog identification within a parsimony framework.
+Bioinformatics (2006) 22(6): 699-707 first published online
+January 12, 2006 doi:10.1093/bioinformatics/btk040
+
+
+PREREQUISITES
+=============
+
+Legacy NCBI BLAST 2.2.2x (not BLAST+)
+PAUP* 4.0beta10 (http://paup.csit.fsu.edu/)
+MCL (http://micans.org/mcl/ ; tested version is 10-201)
+Sun Grid Engine (SGE)
+
+INSTALL
+=======
+
+1. Create the installation directory (e.g. /opt/orthologid) for OrthologID.
+
+  mkdir <INSTALL-DIR>
+
+2. Clone the OrthologID Mercurial repository (if "hg" is not available,
+you need the Mercurial client from http://mercurial.selenic.com/):
+
+  cd <INSTALL-DIR>
+  hg clone http://nypg.bio.nyu.edu/repo/oid/mainline
+
+3. Create symlinks to point to these directories:
+
+  ln -s mainline/scripts bin
+  ln -s mainline/perllib lib
+
+4. Create the OID_HOME environment variable:
+
+  export OID_HOME=<INSTALL-DIR>
+
+ANALYSIS
+========
+
+1. Create a directory for your OrthologID analysis and set
+the OID_USER_DIR environment variable to that directory, e.g.
+
+  export OID_USER_DIR=~/bacteriaOID
+
+2. Create a "config" file in $OID_USER_DIR.  A typical config file looks
+like this:
+
+INGROUP=Sp1 Sp2 Sp3 Sp4 Sp5 Sp6 Sp7 Sp8
+OUTGROUP=Sp9 Sp10
+NCPU=4
+PEQUEUE=threads
+VERBOSE=2
+DEBUG=1
+
+In the above config, there are 8 ingroup taxa (INGROUP) and 2 
+outgroup taxa (OUTGROUP).  Taxon names must contain alphanumerics ONLY.
+
+NCPU is the number of cores per compute nodes in your cluster.
+
+PEQUEUE is the shared memory Parallel Environment (PE) queue in your
+SGE environment.  This is used to run multi-threaded sub tasks of
+the pipeline.
+
+3. Format your sequences into fasta files (one per taxon) and put them
+in the "blastdb" directory under $OID_USER_DIR.  Each fasta file must
+be named after the taxon name specified in the above config file,
+e.g. Sp1.faa, Sp2.faa, Sp3.faa, etc.  Currently only PROTEIN sequences
+are supported.
+
+In each fasta file, each sequence header (defline) must follow this format:
+
+>TaxonName#SeqID
+
+For example, "Sp1.faa" might look like this:
+
+>Sp1#ABC0001
+MVQYNFKRITVVPNGKEFVDIILSRTQRQTPTVVHKGYKINRLRQF
+>Sp1#DEF34567
+MVQYNFKRITVVPNGKEFVDIILSRTQRQTPTVVHKGYKINRLRQFYMRKVKYTQTN
+...
+
+In addition to alphanumerics, the "SeqID" portion may contain dot "."
+and underscore "_", but not any other characters.  So "Sp1#ABC001.1"
+and "Sp1#ABC001_1" are allowed, but not "Sp1#ABC001-1".
+
+4. Run the OrthologID pipeline 
+
+  nohup $OID_HOME/bin/run_pipeline.sh > run.log 2>&1 &
+
+Check run.log for progress.
+
+5. After the run completes, the following directories/files will exist
+in $OID_USER_DIR:
+
+blast: working directory for clustering
+data: gene families (one per directory, containing gene family alignment,
+gene tree, and ortholog assignments)
+log: log files for SGE jobs
+matrix.nex: the simultaneous analysis matrix created from all the orthologs
+
+TODO
+====
+
+- Migrate to NCBI BLAST+
+- Migrate from PAUP* to TNT
+- Support for other resource manager, e.g. TORQUE/PBS
+- Allow nucleotide sequences
+
+For comments and suggestions, contact Ernest Lee (elee@amnh.org).
+

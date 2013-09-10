@@ -1,0 +1,80 @@
+#!/usr/bin/perl -w
+use strict;
+use Getopt::Long;
+
+my ($infile, $outdir);
+GetOptions(
+	   'i|infile=s'       => \$infile,
+	   'o|outdir=s'       => \$outdir,
+	   );
+
+`mkdir -p $outdir`;
+
+# stream the maf file into memory
+my $aln = {};
+my $header;
+my $counter = 0;
+open (F, "$infile");
+while (my $line = <F>){
+    chomp $line;
+    if ($line =~m/^\#\#/){
+	$header = $line;
+    }
+    elsif ($line =~m/^a/){
+	$counter++;
+        $aln->{$counter}->{'data'} = $line;
+    }
+    elsif ($line =~m/^s/){
+	my @splits = split (/\s+/, $line);
+	my @splits2 = split (/\./, $splits[1]);
+	$aln->{$counter}->{'aln'}->{$splits2[0]} = $splits[6];
+    }
+    else {
+	next;
+    }
+}
+close (F);
+
+foreach my $index (sort {$a <=> $b} keys %$aln){
+    open (O, ">$outdir/MG$index.fa");
+    my $tcounter = 0;
+    foreach my $taxon (sort keys %{$aln->{$index}->{'aln'}}){
+	$tcounter++;
+	print O ">$taxon\n$aln->{$index}->{'aln'}->{$taxon}\n";
+    }
+    close (O);
+    if ($tcounter == 1){
+	`rm $outdir/MG$index.fa`;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+=head
+my $alnin = Bio::AlignIO->new(-file   => "$infile",
+			      -format => 'maf');
+
+# get aln data
+my $alncounter = 0;
+while (my $aln = $alignobj->next_aln()){
+    my $label
+    my $score = $aln->{'score'};
+    $alncounter++;
+
+    foreach my $seq ($alnobj->each_seq){
+	$seqcounter++;
+	my $id        = $seq->display_id;
+	my $sequence = $seq->seq;
+	
+
+}
+=cut

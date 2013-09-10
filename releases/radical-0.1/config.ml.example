@@ -1,0 +1,9 @@
+TREECOMMAND=-T 1 -m PROTGAMMAJTTF -f d -N 1
+CONTREECOMMAND=contree all/ majrule=yes grpfreq=yes
+MAXTREES=200
+SAMPLES=2
+SECTIONS=1,2,4,8,16,32,64,106
+ROOT=Calb
+RSCRIPT=/home/apurva/bin/loess.R
+SPAN=0.75
+MODE=ML

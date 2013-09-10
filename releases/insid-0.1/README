@@ -1,0 +1,85 @@
+Requirements
+------------
+
+- UNIX/Linux
+- perl5
+- R (http://www.r-project.org/)
+- Mummer (http://mummer.sourceforge.net/)
+- Metasim (http://www-ab.informatik.uni-tuebingen.de/software/metasim)
+- Bioperl (www.bioperl.org)
+
+Setup / Installation
+--------------------
+
+- Install Mummer and Metasim and link or copy into $PATH.
+- Install bioperl, and if necessary, update $PERL5LB.
+- Add bin/ programs insid.pl, insidR.pl and mm.R to a location within $PATH
+	(optional if you don't mind calling the programs directly).
+- Add lib/ modules Metasim.pm and Mummer.pm to $PERL5LIB.
+- Edit config file to contain desired command line options 
+	for mummer and metasim, and desired query genome coverages
+	if simulating sequence, as in:
+
+	MUMMER=-mum -b -c -F -l 19
+	METASIM=--empirical
+	COVERAGES=0.05,0.1,0.25,0.5,0.75,1,5,10,20
+
+Example Run
+-----------
+
+- Run the insid.pl program to generate PRC curves:
+	insid.pl -p <number of processors> -c <run configuration file> 
+	-r <reference sequence file> [-s <directory of query reads> ||
+	-q <query genome>] -o <output directory>
+
+- Run the insidR.pl to model the PRC curves and derive the COGWES value:
+	insidR.pl -i <summary file from insid.pl> -m <slope> 
+	-r <location of mm.R script> -o <output directory>
+
+Output Guide
+------------
+
+insid.pl:
+genome/raw/	Contains the raw mummer output	
+genome/results/	Contains parsed mummer output
+genome/stderr/	Contains mummer run stderr
+metasim/reads/	Contains reads simulated by metasim
+metasim/stderr/	Contains metasim run stderr
+reads/raw/	Contains raw mummer output for each set of reads
+reads/results/	Contains parsed mummer output for each set of reads
+reads/stderr/	Contains mummer run stderr's for each set of reads
+summaries/	Contains summaries for each set of reads
+summary		Compilies all summaries into one final output file
+
+The summary file can be used to plot the PRC curves and model
+alignment saturation behavior.
+
+The summary file contains the following fields:
+1. query sequence count
+2. query sequence length
+3. query sequence coverage (if query sequence genome length is known; -q option)
+4. number of reference bp covered in the mummer WGA (if query genome supplied; -q option)
+5. percent of reference covered in the mummer WGA (again, only if the query genome is supplied; -q option)
+6. reference sequence length
+7. reference bps covered
+8. percent of reference covered
+
+insidR.pl:
+R models are saved into a user specified output directory.
+Values solved at a given slope for the model generated are printed 
+to stdout with the following fields:
+1. summary file name
+2. K (alignment constant)
+3. Rmax (reference covered maximum)
+4. slope for which values requested
+5. query base pairs required
+6. reference base pairs covered
+7. slope given reference base pairs covered with WGA (if query genome is supplied; -q)
+8. query base pairs required given WGA (requires -q)
+9. reference base pairs covered in WGA
+
+For more specific run information, see insid.pl -h and insidR.pl -h.
+
+ 
+
+ 

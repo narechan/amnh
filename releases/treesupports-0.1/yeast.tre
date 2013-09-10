@@ -1,0 +1,15 @@
+#NEXUS
+Begin trees;  
+
+Translate
+1 Scer,
+2 Spar,
+3 Smik,
+4 Skud,
+5 Sbay,
+6 Scas,
+7 Sklu,
+8 Calb
+	 ;
+tree yeast = [&U] (8,(7,(6,(5,(4,(3,(1,2)))))));
+End;

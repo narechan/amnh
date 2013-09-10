@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+use strict;
+use Getopt::Long;
+use Bio::AlignIO;
+
+my ($infile);
+GetOptions(
+	   'i|infile=s'       => \$infile,
+	   );
+
+my $alnin = Bio::AlignIO->new(-file   => "$infile",
+			      -format => 'maf');
+
+# get aln data
+my $alncounter = 0;
+while (my $aln = $alignobj->next_aln()){
+    my $label
+    my $score = $aln->{'score'};
+    $alncounter++;
+
+    foreach my $seq ($alnobj->each_seq){
+	$seqcounter++;
+	my $id        = $seq->display_id;
+	my $sequence = $seq->seq;
+	
+
+}
