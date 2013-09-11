@@ -599,10 +599,10 @@ my $cladecounter = 0;
 foreach my $clade (keys %$clades){
     $cladecounter++;
     if ($clades->{$clade}){
-	print "clade$cladecounter\t$clade\t$clades->{$clade}\n";
+	print "$treefilename\tclade$cladecounter\t$clade\t$clades->{$clade}\n";
     }
     else {
-	print "clade$cladecounter\t$clade\tNULL\n";
+	print "$treefilename\tclade$cladecounter\t$clade\tNULL\n";
     }
 }
 
