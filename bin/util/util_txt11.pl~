@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use Getopt::Std;
+
+my %opts = ();
+getopts ('l:i:', \%opts);
+my $infile    = $opts{'i'};
+my $lookupfile    = $opts{'l'};
+
+my $lookup = {};
+open (L, "$lookupfile");
+while (my $line = <L>){
+    chomp $line;
+    my ($a, $b) = split (/\t/, $line);
+    $lookup->{$a} = $b;
+}
+
+open (F, "$infile");
+while (my $line = <F>){
+    chomp $line;
+    my @data = split (/\t/, $line);
+    if (exists($lookup->{$data[11]})){
+	print "$line\t$lookup->{$data[11]}\n";
+    }
+    else {
+	print "$line\tNO_GENE_NAME\n";
+    }
+}
+close (F);

@@ -49,32 +49,34 @@ foreach my $aln (@alns){
     print STDERR "Working on $aln\n";
 #    next unless $aln eq "OG1.fa";
 
-    my @alnname = split (/\./, $aln);
+#    my @alnname = split (/\./, $aln);
     my $alnin = Bio::AlignIO->new(-file   => "$indir/$aln",
 				  -format => "$format");
     
-    $alnname[0] =~s/-/_/g;
+#    $alnname[0] =~s/-/_/g;
 #    $alnname[0] = "OG" . $alnname[0]; #sal pbs study specific
 
     # get aln lengths
     my $alnobj = $alnin->next_aln();
     my $alnlen = $alnobj->length;
     $alnlentot += $alnlen;
-    $alnlens->{$alnname[0]} = $alnlen;
-#    $alnlens->{$aln} = $alnlen;
+#    $alnlens->{$alnname[0]} = $alnlen;
+    $alnlens->{$aln} = $alnlen;
     
     # get aln data
     my %seq;
     foreach my $seq ($alnobj->each_seq){
 	my $id        = $seq->display_id;
-	
 #	$id =~s/\_.*//g; #yeast pbs study specific
-	
-	$seq{$id} = 1;
+	$id =~s/\/.*//g; #codon aln specific
+#	$id =~s/\s//g;
+#	my $acc = $seq->display_id;
+#	my ($id, $junk) = split (/\|/, $acc);
+ 	$seq{$id} = 1;
 	$taxa{$id} = 1;
 	my $sequence = $seq->seq;
-	$alndata->{$alnname[0]}->{$id} = $sequence;
-#	$alndata->{$aln}->{$id} = $sequence;
+#	$alndata->{$alnname[0]}->{$id} = $sequence;
+	$alndata->{$aln}->{$id} = $sequence;
     }
     
     # fill in missing data if any 
@@ -84,8 +86,8 @@ foreach my $aln (@alns){
 	}
 	else {
 	    my $missing = '?' x $alnlen;
-	    $alndata->{$alnname[0]}->{$tax} = $missing;
-#	    $alndata->{$aln}->{$tax} = $missing;
+#	    $alndata->{$alnname[0]}->{$tax} = $missing;
+	    $alndata->{$aln}->{$tax} = $missing;
 	}
     }
 }

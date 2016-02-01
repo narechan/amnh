@@ -41,6 +41,7 @@ use strict;
 use Getopt::Long;
 use Pod::Usage;
 use Bio::DB::GenBank;
+use Bio::SeqIO;
 
 my ($help, $list, $outdir);
 GetOptions(
@@ -60,7 +61,9 @@ while (my $line = <L>){
     $line =~s/\[accn\]//g;
     my ($taxon, $acc) = split (/\t/, $line);
     my $gb_record = new Bio::DB::GenBank;
-    my $record = $gb_record->get_Seq_by_acc($acc);
+    my $record = $gb_record->get_Seq_by_acc($taxon);
+    my $contigs = $record->each_tag_value('wgs');
+
     print yellow;
 #    $queries->{$query} = $acc;
 }

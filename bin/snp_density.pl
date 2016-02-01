@@ -1,42 +1,35 @@
 #!/usr/bin/perl -w
 
-# This program accepts a list of snps from snp_annotator.pl
+# This program accepts a list of snps from snpeff
 # and creates a density flatfile that gives the freq of snps
 # in a user input interval.
 
-# -i is the input snp table
+# -i is the input snp table or vcf file (a single snpeff or vcf, not concatenated across samples)
+#    if you want to compile stats across queries you can concatenate them but their origin will be lost
 # -l is the length of the window you want
-# -t is the list of taxa you want to include
-#    (others in the snp table will be skipped)
-# -q is the snp quality above which snps are accepted
 # -g is the length of your genome
 # -m is the motion (number of bases you want to slide your window
+
+# NOTE that snp calls should already be at the filtered stage here (hets, cutoff, omitted regions, etc...)
+# you can do that in snp_matrixBuilder.pl
+
+# either -i or -v must be specified
 
 #####SETUP#####
 
 use strict;
 use Getopt::Long;
 
-my ($infile, $taxalist, $quality, $length, $genlen, $motion);
+my ($infile, $length, $genlen, $motion, $vcffile);
 GetOptions(
 	   'i|infile=s'   => \$infile,
-	   't|taxalist=s' => \$taxalist,
-	   'q|quality=s'  => \$quality,
 	   'l|length=s'   => \$length,
 	   'g|genlen=s'   => \$genlen,
 	   'm|motion=s'   => \$motion,
+           'v|vcffile=s'   => \$vcffile,
 	   );
 
 #####MAIN#####
-
-# readin the quey list
-my $queries = {};
-open (L, "$taxalist");
-while (my $line = <L>){
-    chomp $line;
-    $queries->{$line} = 1;
-}
-close (L);
 
 # generate windows
 my $parts = {};
@@ -62,28 +55,19 @@ while (1){
 
 # cycle through the snps file and tabulate
 my $freqs = {};
+my $reference;
+
 open (I, "$infile");
 #my $scount = 0;
-my $reference;
 while (my $line = <I>){
     chomp $line;
 #    $scount++;
 #    print STDERR "$scount\n";
-
-    my ($ref, $query, $refpos, $refbase, $snp, $sq, $stuff) = 
-	split (/\t/, $line, 7);
+    
+    my ($ref, $refpos, $stuff) = 
+	split (/\t/, $line, 3);
     $reference = $ref;
-
-    # filters
-    next if ($refbase eq "N"); #ambiguous ref
-    next unless (exists ($queries->{$query})); # unincluded query
-    if ($sq < $quality){ #sq
-	next;
-    }
-    if ($snp =~m/\,/){ #hets
-	next;
-    }
-
+    
     # brute forcce binning
     foreach my $region (sort {$a <=> $b} keys %$parts){
 	my ($start, $end) = split (/\-/, $parts->{$region});
@@ -97,7 +81,7 @@ while (my $line = <I>){
     }
 }
 close (I);
-
+    
 # fill in all undefined values in freq datastruc
 foreach my $region (sort {$a <=> $b} keys %$parts){
     if (exists ($freqs->{$region})){

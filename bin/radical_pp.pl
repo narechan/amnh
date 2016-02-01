@@ -108,7 +108,8 @@ else {
 ($index = "$treefile_name") unless ($index);
 my $topoindex = {};
 if ($treefile){
-    $topoindex  = $cfiobj->parse_tree ($treefile, $root, "nexus");
+#    $topoindex  = $cfiobj->parse_tree ($treefile, $root, "nexus");
+    $topoindex  = $cfiobj->parse_tree ($treefile, $root, "newick");
 }
 elsif ($dist and $index){
     open (TD, "$dist");
@@ -400,7 +401,8 @@ foreach my $k (sort keys %$datafin){
 # if an input tree is provided
 if ($treefile){
     my $treein = new Bio::TreeIO(-file => $treefile,
-				 -format => 'nexus');
+#				 -format => 'nexus');
+				 -format => 'newick'); 
     my $treeout = new Bio::TreeIO(-file => ">$outdir/summaries/$index/annotated.tre",
 				  -format => 'newick');
     my $tree = $treein->next_tree();

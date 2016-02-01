@@ -34,18 +34,22 @@ else {
 }
 
 # do the samtools depth calculation
-`samtools depth $bamfile > /tmp/depth.$bam_name.out`;
+`samtools depth $bamfile > /scratch/apurva/tmp/depth.$bam_name.out`;
 
 # parse the depth file
 my $sum = 0;
-open (D, "/tmp/depth.$bam_name.out");
+my $counter = 0;
+open (D, "/scratch/apurva/tmp/depth.$bam_name.out");
 while (my $line = <D>){
     chomp $line;
+
+    $counter++;
     my ($acc, $pos, $cov) = split (/\t/, $line);
     $sum += $cov;
 }
 close (D);
 
 my $coverage = $sum / $size;
-print "$bam_name\t$coverage\n";
-`rm /tmp/depth.$bam_name.out`;
+my $touched  = $counter / $size;
+print "$bam_name\t$coverage\t$touched\n";
+`rm /scratch/apurva/tmp/depth.$bam_name.out`;

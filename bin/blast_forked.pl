@@ -145,6 +145,7 @@ sub parse {
 			   $result->query_length,      #2
 			   'No hits found',            #3
 			   '0',                        #4
+		           '1000',
 			   '1',                        #5
 			   '1',                        #6
 			   '1000',                     #7
@@ -212,6 +213,7 @@ sub parse {
 			       $result->query_length,         #2
 			       $hit->name,                    #3
 			       $hit->length(),                #4
+		               $hit->significance(),
 			       $hit_count,                    #5
 			       $hsp->rank,                    #6
 			       $hsp->evalue(),                #7

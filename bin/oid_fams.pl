@@ -5,48 +5,48 @@ use Bio::Seq;
 use Bio::SeqIO;
 
 my %opts = ();
-getopts ('o:l:', \%opts);
+getopts ('o:', \%opts);
 my $oid  = $opts{'o'};
-my $list = $opts{'l'};
 
-my @species;
-open (L, "$list");
-while (my $line = <L>){
-    chomp $line;
-    push (@species, $line);
-}
-close (L);
-
-opendir (E, "$oid/data");
+opendir (E, "$oid");
 my @families = readdir (E);
 shift @families;
 shift @families;
 closedir (E);
 
-my %data;
-my $count;
+my $partdist = {};
 foreach my $family (@families){
-    next if ($family eq "singlets");
-    my $seqin = Bio::SeqIO -> new (-format => 'Fasta', -file => "$oid/data/$family/FAMILY");
+    my $seqin = Bio::SeqIO -> new (-format => 'Fasta', -file => "$oid/$family/FAMILY");
 
+    my $sp = {};
     my $counter = 0;
     while (my $sequence_obj = $seqin -> next_seq()){
 	$counter++;
-	my $id       = $sequence_obj -> display_id();
-	my ($species, $acc) = split (/\#/, $id);
-	$data{$family}{$species}++;
+	my $i       = $sequence_obj -> display_id();
+	my ($id, $acc) = split (/\#/, $i);
+	    
+	if (($id eq "PE001") or ($id eq "PE002") or ($id eq "PE003") or ($id eq "PE004") or ($id eq "PE005")){
+	    $partdist->{$family}->{'low'}++;
+	}
+	elsif (($id eq "PE006") or ($id eq "PE007") or ($id eq "PE008") or ($id eq "PE009") or ($id eq "PE010")){
+	    $partdist->{$family}->{'high'}++;
+	}
+	else {
+	    $partdist->{$family}->{'other'}++;
+	}
     }
-    $count{$family} = $counter;
 
 }
-
-foreach my $family (sort keys %data){
-    print "$family\t";
-#    foreach my $species (keys %{$data{$family}}){
-    foreach my $species (@species){
-	my $spcnt = $data{$family}{$species};
-	my $sppct = sprintf ("%.2f", ($spcnt / $count{$family}));
-	print "$sppct\t";
-    }
-    print "\n";
+foreach my $gene (sort keys %$partdist){                          
+    my @cats;                                                      
+    foreach my $cat ("low", "high", "other"){          
+        if ($partdist->{$gene}->{$cat}){                          
+            push (@cats, $partdist->{$gene}->{$cat});             
+        }                                                        
+        else {                                                     
+            push (@cats, 0);                                      
+        }                                                         
+    }                                                              
+    my $cats = join "\t", @cats;                                   
+    print "$gene\t$cats\n";      
 }

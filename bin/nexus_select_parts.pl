@@ -90,8 +90,7 @@ my $start = 1;
 my $end;
 foreach my $count (sort keys %$partitions){
     $end = $start - 1 + $lengths->{$count};
-#    print CAT "[Partition $count length $alnlens->{$count} chars $start-$end]\n"
-    ;
+#    print CAT "[Partition $count length $alnlens->{$count} chars $start-$end]\n";
     print CAT "[Partition $count length $lengths->{$count} chars $start-$end]\n";
 #    print PRT "CHARSET $count=$start-$end;\n";
     print PRT "CHARSET $count=$start-$end;\n";

@@ -32,9 +32,7 @@ anarechania *a|t* amnh.org
                                                                                      
 =head1 COPYRIGHT                                                                     
                                                                                      
-Copyright (c) 2015 American Museum of Natural History                                
-                                                                                     
-This library is free software;                                                       
+This library is free software (GNU GPL);                                                       
 you can redistribute it and/or modify                                                
 it under the same terms as Perl itself.                                              
                                                                                      

@@ -124,6 +124,7 @@ sub load_aln{
 	    my ($partition, $coords) =
                 split (/\=/, $line);
 
+#	    print STDERR "$line\n";
 	    $partition =~s/charset\s*//ig;
 	    $partition =~s/\s+//g;
 

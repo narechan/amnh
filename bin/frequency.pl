@@ -23,7 +23,7 @@ my $bins   = $opts{'b'};
 
 my @lens;
 my @bins;
-push (@bins, 0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50);
+push (@bins, 0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40);
 #my $seqin = Bio::SeqIO->new (-format=>'Fasta', -file=>"$infile");
 #while (my $sequence_obj = $seqin->next_seq()){
 #    my $id       = $sequence_obj->display_id();

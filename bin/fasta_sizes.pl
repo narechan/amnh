@@ -15,6 +15,7 @@ while (my $sequence_obj = $seqin->next_seq()){
     my $id       = $sequence_obj->display_id();
     my $seq      = $sequence_obj->seq();
     my $len      = $sequence_obj->length();
+    print "$id\t$len\n";
     push (@lengths, $len);
 #    open (F, ">$outdir/$id.fasta");
 #    print F ">$id\n$seq\n";
@@ -27,5 +28,6 @@ $statobj->add_data(@lengths);
 my $count = $statobj->count();
 my $sum   = $statobj->sum();
 my $mean  = $statobj->mean();
+my $median = $statobj->median();
 
-print "$fasta\t$count\t$sum\t$mean\n";
+print "$fasta\t$count\t$sum\t$mean\t$median\n";

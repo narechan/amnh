@@ -162,6 +162,8 @@ close (ID);
 close (MI);
 close (PU);
 
+# remove the sam file
+`rm $outdir/results/$name.sam`;
 
 ####SUB####
 

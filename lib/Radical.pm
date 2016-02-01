@@ -312,7 +312,7 @@ sub run_raxml{
     my @filename = split (/\//, $file);
     my $filename = pop @filename;
 
-    my $cmd = "raxml726 ";
+    my $cmd = "raxml800 ";
     $cmd .= "$self->{'configuration'}->{'TREECOMMAND'} ";
     $cmd .= "-o $root ";
     $cmd .= "-s $file ";

@@ -57,12 +57,12 @@ my $gb = new Bio::DB::GenBank(-format => 'Fasta');
 open (LIST, "$list");
 while (my $line = <LIST>){
     chomp $line;
-    my ($name, $acc) = split (/\t/, $line);
+    my ($name, $acc) = split (/\s/, $line);
     
     print STDERR "Working on $line\n";
 
-#    my $seq_obj = $gb->get_Seq_by_acc($line);
-    my $seq_obj = $gb->get_Seq_by_acc($acc); 
+    my $seq_obj = $gb->get_Seq_by_acc($line);
+#    my $seq_obj = $gb->get_Seq_by_acc($acc); 
     my $id = $seq_obj->id();
     my $desc = $seq_obj->desc();
     my $seq = $seq_obj->seq();

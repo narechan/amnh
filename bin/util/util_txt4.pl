@@ -11,8 +11,7 @@ my $listdata = {};
 open (F, "$list");
 while (my $line = <F>){
     chomp $line;
-    my @data = split (/\t/, $line);
-    $listdata->{$data[1]} = $data[0];
+    $listdata->{$line} = 1;
 }
 close (F);
 
@@ -20,11 +19,8 @@ open (I, "$in");
 while (my $line = <I>){
     chomp $line;
     my @data = split (/\t/, $line);
-    if (exists ($listdata->{$data[10]})){
-	print "$line\t$listdata->{$data[10]}\n";
-    }
-    else {
-	print "$line\tNO FUNC CAT\n";
+    if (exists ($listdata->{$data[2]})){
+	print "$line\n";
     }
 }
 close (I);

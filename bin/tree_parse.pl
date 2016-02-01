@@ -65,8 +65,14 @@ foreach my $node (@internalnodes){
     # in TreeIO where an extra set of parens is left                                                         
     # on outermost nest;                                                                                     
     my @sortedarray = sort @array;
+    my $sortedarrayCnt = @sortedarray;
     my $arrayjoin = join(",", @sortedarray);
     $lineages->{$arrayjoin} = [@sortedarray];
     
-    print "$internal_counter\t$arrayjoin\t$nodeid\n";
+    if ($nodeid){
+	print "$internal_counter\t$arrayjoin\t$nodeid\t$sortedarrayCnt\n";
+    }
+    else {
+	print "$internal_counter\t$arrayjoin\tNA\t$sortedarrayCnt\n";
+    }
 }

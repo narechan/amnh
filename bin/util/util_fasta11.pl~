@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+
+use Getopt::Std;
+use Bio::Seq;
+use Bio::SeqIO;
+
+foreach my $file (@ARGV){
+    my $seqin = Bio::SeqIO->new (-format=>'Fasta', -file=>"$file");
+    while (my $sequence_obj = $seqin->next_seq()){
+	my $id       = $sequence_obj->display_id();
+	my $seq      = $sequence_obj->seq();
+	my $len = length ($seq);
+	print STDERR "$id\t$len\n";
+
+	$seq =~s/c/C/g;
+	$seq =~s/a/A/g;
+	$seq =~s/t/T/g;
+	$seq =~s/g/G/g;
+	$seq =~s/N/?/g;
+	$seq =~s/\-/?/g;
+	print ">$id\n$seq\n";
+    }
+}

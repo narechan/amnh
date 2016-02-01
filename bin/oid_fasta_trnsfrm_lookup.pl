@@ -14,15 +14,16 @@ my $outdir = $opts{'o'};
 my $seqin = Bio::SeqIO -> new (-format => 'Fasta', -file => "$fasta");
 
 my $counter = 0;
-open (F, ">$outdir/$species.fasta");
+open (F, ">$outdir/$species.faa");
 open (L, ">$outdir/$species.lookup");
 while (my $sequence_obj = $seqin -> next_seq()){
     $counter++;
     my $id       = $sequence_obj -> display_id();
+    my $desc     = $sequence_obj->desc();
     my $sequence = $sequence_obj -> seq();
     
     print F ">$species#$counter\n$sequence\n";
-    print L "$counter\t$id\n";
+    print L "$counter\t$id\t$desc\n";
 
 }
 close (F);

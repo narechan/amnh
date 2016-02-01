@@ -55,7 +55,8 @@ my $cfiobj = Radical->new;
 
 # get the tree topology
 #my $topo = $cfiobj->parse_tree ($treefile, $root, 'newick');
-my $topo = $cfiobj->parse_tree ($treefile, $roots->{$treefile[3]}, 'newick');
+#my $topo = $cfiobj->parse_tree ($treefile, $roots->{$treefile[3]}, 'newick');
+my $topo = $cfiobj->parse_tree ($treefile, $roots->{$treefile[1]}, 'newick');
 
 my $seqskept  = {};
 my $nodeskept = {};

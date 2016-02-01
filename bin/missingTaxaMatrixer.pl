@@ -22,6 +22,8 @@ Requires the bioperl libs.
 This program generates matrices given missing data cutoffs.
 Assumes that missing characters are denoted by '?'.
 
+    Also generates a presence absence matrix based on 1
+
 =head1 AUTHOR
 
 Apurva Narechania
@@ -121,7 +123,11 @@ my $nchars = 0;
 my $taxa = keys %taxa;
 foreach my $part (sort keys %freq){
     my $ratio = $freq{$part} / $taxa;
-    next if ($ratio < $cutoff);
+    next if ($freq{$part} < $cutoff);
+#    next if ($freq{$part} > $cutoff);
+#    next if ($ratio < $cutoff);
+#    next if ($ratio > $cutoff);
+#    next if ($ratio == $cutoff);
     
     my $end = $start + ($lengths->{$part} - 1);
     $newparts->{$part} = "$start-$end";
@@ -138,7 +144,11 @@ print "MATRIX\n\n";
 
 foreach my $part (sort keys %freq){
     my $ratio = $freq{$part} / $taxa;
-    next if ($ratio < $cutoff);
+    next if ($freq{$part} < $cutoff);
+#    next if ($freq{$part} > $cutoff);
+#    next if ($ratio < $cutoff);
+#    next if ($ratio > $cutoff);
+#    next if ($ratio == $cutoff);
 
     print "[Partition $part chars $newparts->{$part}]\n";
     foreach my $tax (sort keys %{ $partitions->{$part} }){

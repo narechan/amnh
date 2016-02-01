@@ -17,6 +17,7 @@ Options:
 --table is a nucmer table of snps for finished seqs (optional)
 --config is your config file
     (contains the codon table of your choice)
+--quality is the quality score cutoff for reporting (optional)
 --query is your query name (for labeling purposes)    
 
 Requires the bioperl libs. 
@@ -57,7 +58,7 @@ use Bio::Index::Fasta;
 use Bio::Seq;
 use Bio::SeqIO;
 
-my ($help, $fasta, $gff3, $vcf, $config, $query, $gb, $table);
+my ($help, $fasta, $gff3, $vcf, $config, $query, $gb, $table, $quality);
 GetOptions(
     'h|help'          => \$help,
     'f|fasta=s'       => \$fasta,
@@ -67,6 +68,7 @@ GetOptions(
     'q|query=s'       => \$query,
     'b|gb=s'          => \$gb,
     't|table=s'       => \$table,	   
+    'x|quality=s'     => \$quality,
 	   ) or pod2usage;
 pod2usage if $help;
 
@@ -224,10 +226,17 @@ while (my $line = <V>){
 	 $snp,
 	 $sq) = split (/\t/, $line);
     }
+
+    # if quality cutoff is defined, apply here
+    if ($quality){
+	next if ($sq < $quality);
+    }
     
     # skip all indels in vcf files
     if ($vcf){
 	next if ($info =~m/INDEL/);
+	next if ($snp =~m/^I/); #this deals with pacbio vcf files which are version 3.3
+	next if ($snp =~m/^D/); #same
     }
     
     # find what kind of sequence the variant is in

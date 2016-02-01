@@ -20,13 +20,12 @@ GetOptions(
 	   );
 
 my $alnin = Bio::AlignIO->new(-file   => "$infile",
-#			      -interleaved => 1,
+			      -interleaved => 0,
 			      -format => "$informat");
 my $alnout = Bio::AlignIO->new(-file   => ">$outfile",
-#			       -interleaved => 0,
-			       -format => "$outformat");
-
-#                              -idlength => 20, # hack for longer phylip names
+			       -interleaved => 0,
+			       -format => "$outformat",
+			       -idlength => 65); # hack for longer phylip names
 
 print STDERR "$infile\n";
 

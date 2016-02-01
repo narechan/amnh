@@ -48,6 +48,10 @@ while (my $sequence_obj = $seqin0->next_seq()){
     $reffastalookup->{$id} = $seq;
 }
 
+# create rand dirs for temp files
+my $rand = rand(10);
+my $blastdir = "blast" . $rand;
+
 # create sequence database for reffasta
 my $index = Bio::Index::Fasta->new(-filename => $reffasta . ".idx", -write_flag => 1);
 $index->make_index($reffasta);
@@ -64,18 +68,18 @@ while (my $sequence_obj = $seqin->next_seq()){
 #    print STDERR "$qcounter\tWorking on $id\n";
     
     # print out a temp fasta file
-    `mkdir -p /tmp/blast/$qcounter`;
-    open (O, ">/tmp/blast/query.$qcounter");
+    `mkdir -p /tmp/$blastdir/$qcounter`;
+    open (O, ">/tmp/$blastdir/query.$qcounter");
     print O ">$id\n$seq\n";
     close (O);
 
     # blast
-    my $name = blast ($conf, "/tmp/blast/query.$qcounter", "$reffasta", "/tmp/blast/$qcounter");
+    my $name = blast ($conf, "/tmp/$blastdir/query.$qcounter", "$reffasta", "/tmp/$blastdir/$qcounter");
 
     # parse
     my $hitkeep;
     my $fracid;
-    my $in = Bio::SearchIO->new(-file   => "/tmp/blast/$qcounter/$name",
+    my $in = Bio::SearchIO->new(-file   => "/tmp/$blastdir/$qcounter/$name",
 				-format => "blast");
     while (my $result = $in->next_result){
 	my $qname = $result->query_name;
@@ -122,7 +126,7 @@ foreach my $nid (keys %$newfasta){
     print ">$nid\n$newfasta->{$nid}\n";
 }
 
-`rm -rf /tmp/blast`;
+`rm -rf /tmp/$blastdir`;
     
 #####SUBS#####
 sub blast{

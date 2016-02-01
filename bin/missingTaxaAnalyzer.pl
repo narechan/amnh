@@ -113,9 +113,12 @@ foreach my $cset (sort keys %$partitions){
     my $fulltaxa = 0;
     my @fulltaxaids;
 
+    open (F, ">$outdir/$cset.fa");
     foreach my $id (sort keys %{ $partitions->{$cset} }){
 	my $seq = $partitions->{$cset}->{$id};
 	$len = length ($seq);
+
+	print F ">$id\n$seq\n";
 
 	# full taxa per partition
 	my $matchstring = '\\' . '?' . "{$len}"; # a bit hokey!                   
@@ -138,6 +141,7 @@ foreach my $cset (sort keys %$partitions){
 	}
 	
     }
+    close (F);
 
     # per strain data collation
     if ($fulltaxa <= 10){
